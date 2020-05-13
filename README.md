@@ -74,3 +74,9 @@ The typical dev cycle is:
 * edit code in the `Pometo` repository
 * crash out of `iex` and the `rappel` app back to the command line
 * restart `rappel` in `iex`
+
+`Pometo` is all about the interopability - so developing it is currently in two languages (`Erlang` and `Elixir`) and depending on how the runtime pans out, potentially in three with `LFE` (or `Lisp Flavoured Erlang`) being the current compiler target of choice.
+
+Typically compilers produce an `Abstract Syntax Tree` or `AST` as an output and oftentimes this is a `YASL` (`Yet Another Shitty Lisp`).
+
+It makes sense to have a `LISP`-`LISP` for the `AST` and the proposed format is an `Erlang` data structure code-named `Liffey` which has the property that if you `to_string()` it, then it becomes `LFE` source code.
