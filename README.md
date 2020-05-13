@@ -6,7 +6,7 @@ THIS PROJECT IS SUPER-EARLY, NOT SO MUCH ALPHA AS BEFORE THE DAWN OF WRITING, SO
 
 If you want to help develop it, dive in.
 
-## How We Develop
+# How We Develop
 
 Development is done inside a docker container.
 
@@ -28,7 +28,7 @@ DEVELOPMENT PROTOCOLS ARE NOT YET DEFINED:
 
 THESE ARE NEXT ON THE AGENDA
 
-## Installation
+# Installation
 
 You need to have `docker` installed on your machine.
 
