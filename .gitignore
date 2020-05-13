@@ -10,3 +10,8 @@ erl_crash.dump
 .elixir_ls/
 *~
 .DS_Store
+.formatter.exs
+.gitignore
+.babelrc
+package-lock.json
+*.mov
