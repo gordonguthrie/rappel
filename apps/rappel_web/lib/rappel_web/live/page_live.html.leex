@@ -1,0 +1,37 @@
+<section>
+    <div id="main" class="main_output"">
+    &nbsp;
+      <%= for m <- @main do %>
+        <%= m %>
+      <% end %>
+    </div>
+</section>
+<section class="input_line">
+  <form phx-change="on_type" phx-submit="on_enter">
+    <input type="text" name="q" value="<%= @query %>" placeholder="Enter Pometo Expression" list="results" autocomplete="off"/>
+    <button type="submit" phx-disable-with="Compiling...">Enter</button>
+  </form>
+</section>
+<section>
+  <div class="small">debug
+  	<input type='checkbox' id='debug' name='debug' value='debug' checked>
+   </div>
+</section>
+<section id="debug_output" class="row">
+	<article class="column">
+	<h4>Lexer Output</h4>
+    <div id="lexer">
+      <%= for {n, l} <- @lexer do %>
+        <div class="mono"><span class="small"><%= n %></span> <%= l %></div>
+      <% end %>
+    <div>
+    </article>
+	<article class="column">    
+    <h4>Parser Output</h4>
+    <div id="parser">
+      <%= for {n, p} <- @parser do %>
+        <div class="mono"><span class="small"><%= n %></span> <%= p %></div>
+      <% end %>
+    <div>
+    </article>    
+</section>

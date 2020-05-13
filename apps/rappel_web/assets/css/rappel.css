@@ -1,0 +1,20 @@
+.main_output {
+	border-style: solid;
+	border-width: 1px;
+	border-color: lightgray;
+	border-radius: 0.4rem;
+	height: 250px;
+	padding: 0.6rem, 1.0rem;
+}
+
+.small {
+	  font-size: 70%;
+}
+
+.hidden {
+	display: none;
+}
+
+.mono {
+	font-family: mono;
+}
