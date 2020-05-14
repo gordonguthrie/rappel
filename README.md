@@ -33,6 +33,14 @@ To see how to write testable documentation please examine this screenshot:
 
 ![Testable Documentation](./docs/images/writing_pometo_tests.png)
 
+The basic development protocol is:
+
+* write a specification of how the system should work in `docs/` using the structured format
+* generating the test suite with `rebar3 pometo_docs_to_tests`
+* running the tests with `rebar3 eunit`
+* writing code until the tests pass
+* commit and push
+
 DEVELOPMENT PROTOCOLS ARE NOT YET DEFINED:
 
 * testing and CI (Continuous Integration)
