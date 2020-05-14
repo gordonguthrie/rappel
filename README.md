@@ -18,9 +18,23 @@ Scripts are provided that shell you into the running docker instance.
 
 The docker container is even jiggered so you can start X-Windows programmes and pop them out (though this is not really necessary).
 
+## Work Elimination
+
+We follow the principle of ***work elimination***. In this respect we work backwards. The user and reference documentation is written ***first*** and it acts as:
+
+* the development specification
+* the main test suite
+
+There is a `rebar3` plugin called `pometo_docs_to_tests` which converts all `*.md` files in `docs` (and directories under it) into tests in `test/generated_tests/`.
+
+The format of the docs is fairly straightforward.
+
+To see how to write testable documentation please examine this screenshot:
+
+![Testable Documentation](./docs/images/writing_pometo_tests.png)
+
 DEVELOPMENT PROTOCOLS ARE NOT YET DEFINED:
 
-* feature specification
 * testing and CI (Continuous Integration)
 * branches to push to
 * pull requests and reviews
