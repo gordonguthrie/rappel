@@ -40,3 +40,12 @@ document.getElementById("debug").addEventListener("click", function () {
 
 	}
 });
+
+document.getElementById("show_bindings").addEventListener("click", function () {
+	if (document.getElementById("show_bindings").checked) {
+		document.getElementById("make_binding").classList.remove("hidden");
+	} else {
+		document.getElementById("make_binding").classList.add("hidden");
+
+	}
+});

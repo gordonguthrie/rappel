@@ -6,6 +6,60 @@ THIS PROJECT IS SUPER-EARLY, NOT SO MUCH ALPHA AS BEFORE THE DAWN OF WRITING, SO
 
 If you want to help develop it, dive in.
 
+# Using Rappel
+
+The main screen of `Rappel` allows you to run `Pometo` commands and displays the results in the main panel:
+
+![Main Rappel Panel](./docs/images/rappel_main_page.png)
+
+At the bottom you see a couple of checkboxes.
+
+If you want to load from data from an arbritrary programme click the checkbox marked `bind data`. The syntax currently used is ***Erlang*** syntax for an `apply(mod, fn, [args])`
+
+![Loading External Data](./docs/images/rappel_load_data.png)
+
+There is a test module that you can call to get dummy data as follows:
+
+* module `Elixir.Rappel.TestData`
+* function: `get_integers`
+* args:
+
+This will get you a vector of 3 random integers.
+
+* module `Elixir.Rappel.TestData`
+* function: `get_integers`
+* args: 7
+
+This will get you a vector of 7 random integers.
+
+* module `Elixir.Rappel.TestData`
+* function: `get_floats`
+* args:
+
+This will get you a vector of 3 random floats.
+
+* module `Elixir.Rappel.TestData`
+* function: `get_integers`
+* args: 9
+
+This will get you a vector of 9 random floats.
+
+The arguments must at the moment be:
+
+* integers
+* floats (normal or scientific notation)
+* atoms
+* Erlang strings (`"double quoted"`)
+* Erlang binaries (`<<"in brackets">>`)
+
+`lists` and `tuples` are not currently supported.
+
+
+There is also a debugger for inspecting the results of the `lex` and `parse` stages of the compiler
+
+![The Debugger](./docs/images/rappel_debug.png)
+
+
 # How We Develop
 
 Development is done inside a docker container.

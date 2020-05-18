@@ -1,10 +1,18 @@
-.main_output {
-	border-style: solid;
-	border-width: 1px;
-	border-color: lightgray;
+.main_output, .debug {
+	border-style:  solid;
+	border-width:  1px;
+	border-color:  lightgray;
 	border-radius: 0.4rem;
-	height: 250px;
-	padding: 0.6rem, 1.0rem;
+	padding:       0.6rem, 1.0rem;
+	overflow-y:    scroll;	
+}
+
+.main_output {
+	height: 450px;
+}
+
+.debug {
+	height: 200px;
 }
 
 .small {
@@ -15,6 +23,17 @@
 	display: none;
 }
 
-.mono {
+.main {
 	font-family: mono;
+	font-size:   90%;
+	padding-left: 1.0rem;
+
+}
+
+.expression {
+	color: darkgreen;
+}
+
+.results {
+	color: orange;
 }
