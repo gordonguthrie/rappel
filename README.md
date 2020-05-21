@@ -110,10 +110,11 @@ You need to have `docker` installed on your machine.
 
 https://docs.docker.com/get-docker/
 
-You need to clone this repo and the `Pometo` repo side by side in your file system
+You need to clone this repo, the `Pometo` repo, and the `LFE` repo side by side in your file system
 
 `git clone git@github.com:gordonguthrie/pometo.git`
 `git clone git@github.com:gordonguthrie/rappel.git`
+`git clone git@github.com:rvirding/lfe.git`
 
 Once the source code is available we bring up the `rappel` docker container
 
