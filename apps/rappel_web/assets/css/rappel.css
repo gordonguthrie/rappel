@@ -31,9 +31,14 @@
 }
 
 .expression {
-	color: darkgreen;
+	color: midnightblue;
 }
 
+.external_binding {
+	color: teal;
+}
+
+
 .results {
-	color: orange;
+	color: maroon;
 }

@@ -15,7 +15,6 @@ defmodule RappelWeb.PageLive do
 
   def handle_event("on_bind", args, socket) do
     # doing nothing
-    IO.inspect(args)
     %{"variable_name" => varname,
       "module"        => mod,
       "function"      => func,
@@ -25,7 +24,8 @@ defmodule RappelWeb.PageLive do
                           vals2 = Enum.join(vals, " ")
                           binding = {varname, {m, f, arguments}}
                           GenServer.call(Session, {:binding, {binding, vals2}});
-      error            -> %{lexed:  %{},
+      error            -> IO.inspect(error, label: "binding failed with")
+                          %{lexed:  %{},
                             parsed: %{}, 
                             main:   %{}}
       end
@@ -65,7 +65,7 @@ defmodule RappelWeb.PageLive do
                     {:module, mod2} = Code.ensure_loaded(mod2)
                     {:ok, {mod2, String.to_existing_atom(func), args_list2}}
                    rescue
-                    error -> IO.puts(error, label: "apply mfa error")
+                    error -> IO.inspect(error, label: "apply mfa error")
                     {:error, "banjo"}
 
                   end

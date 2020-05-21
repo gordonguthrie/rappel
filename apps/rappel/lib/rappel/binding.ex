@@ -1,4 +1,4 @@
-defmodule Rappel.Rappel.InternalBinding do
+defmodule Rappel.Rappel.Binding do
 	
 	defstruct expression: "",
 			  results:    ""

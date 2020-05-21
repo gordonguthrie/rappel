@@ -2,7 +2,7 @@
     <div id="main" class="main_output">
     &nbsp;
       <%= for {type, k, v} <- @main do %>
-        <div class="main expression">
+        <div class="main <%= type %>">
           <%= k %>
         </div>
         <div class="main results">

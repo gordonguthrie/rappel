@@ -5,7 +5,6 @@ defmodule Rappel.TestData do
 	end
 
 	def get_integers(n) when is_integer(n) do
-		IO.inspect(n)
 		get_i(n, [])
 	end
 
