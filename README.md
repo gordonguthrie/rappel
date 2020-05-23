@@ -112,6 +112,8 @@ https://docs.docker.com/get-docker/
 
 You need to clone this repo, the `Pometo` repo, and the `LFE` repo side by side in your file system
 
+***NOTE***: there is a problem getting lfe from Hex and we are using from-source installs at the moment
+
 `git clone git@github.com:gordonguthrie/pometo.git`
 `git clone git@github.com:gordonguthrie/rappel.git`
 `git clone git@github.com:rvirding/lfe.git`
@@ -137,8 +139,13 @@ The `rappel` app is in the directory `/rappel` and `pometo` is in `/pometo`
 
 To start `rappel` you should run the following commands inside the docker container:
 
+Due to the dependency build problems you need to manually build `LFE` first. This nees to be fixed
+
 ```
+cd /lfe
+rebar3 compile
 cd /rappel
+mix deps.get
 iex -S mix phx.server
 ```
 
