@@ -139,13 +139,14 @@ The `rappel` app is in the directory `/rappel` and `pometo` is in `/pometo`
 
 To start `rappel` you should run the following commands inside the docker container:
 
-Due to the dependency build problems you need to manually build `LFE` first. This nees to be fixed
+Due to the dependency build problems you need to manually build `LFE` first and then pometo manually. This nees to be fixed.
 
 ```
 cd /lfe
 rebar3 compile
 cd /rappel
 mix deps.get
+mix deps.compile pometo
 iex -S mix phx.server
 ```
 

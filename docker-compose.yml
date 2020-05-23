@@ -7,7 +7,6 @@ services:
       dockerfile: ./docker/rappel.dockerfile
       context: ./
     environment:
-      # Variables to connect to our Postgres server
       DISPLAY: host.docker.internal:0
     ports:
       # Mapping the port to make the Phoenix app accessible outside of the container
@@ -16,10 +15,10 @@ services:
       - type: bind
         source: ./
         target: /rappel
+        # there is a mix/rebar3 problem so we need a local install of LFE
       - type: bind
         source: ../lfe
-        target: /lfe
-      # when you are developing and you want to local mount the pometo APL code
+        target: /lfe      # when you are developing and you want to local mount the pometo APL code
       - type: bind
         source: ../pometo
         target: /pometo

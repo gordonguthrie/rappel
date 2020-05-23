@@ -45,7 +45,7 @@ defmodule Rappel.Rappel.Session do
         [repacked] -> repacked
     end
     merged_bindings = merge(repacked_bindings, bs)
-    {results, merged_bindings} = :pometo_runtime.run_ast({parsed, merged_bindings})
+    results = :pometo_runtime.run_ast(parsed)
     new_session = %Session{session | bindings: merged_bindings,
                                      commands: [{e, parsed, results} | c]}
     reply = %{lexed: lexed, parsed: parsed, main: make_main(new_session)}

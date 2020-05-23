@@ -25,7 +25,7 @@ defmodule Rappel.Umbrella.MixProject do
   # and cannot be accessed from applications inside the apps/ folder.
   defp deps do
     [
-      {:lfe,    path: "../lfe"},
+      {:lfe,    path: "../lfe", override: true},
       {:pometo, path: "../pometo"}
     ]
   end
