@@ -1,7 +1,7 @@
 FROM elixir:1.9.4
 
-ARG NODE_ENV
-ENV NODE_ENV $NODE_ENV
+ARG uid
+ARG gid
 
 USER root
 
@@ -22,11 +22,7 @@ RUN apt-get install -y x11-apps
 RUN apt-get install -y pgadmin3
 RUN apt-get install -y tree
 
-RUN echo "${NODE_ENV}" > /tmp/node_env
-
-# Replace 1000 with your user / group id
-RUN export uid=501 gid=20 && \
-    mkdir -p /home/developer && \
+RUN mkdir -p /home/developer && \
     echo "developer:x:${uid}:${gid}:Developer,,,:/home/developer:/bin/bash" >> /etc/passwd && \
     echo "developer:x:${uid}:" >> /etc/group && \
     echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer && \
