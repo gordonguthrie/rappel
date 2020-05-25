@@ -1,4 +1,9 @@
-<section>
+<section class="menu">
+  <div class="button menu-item" data-menu-controlled="expressions">Expressions</div>
+  <div class="button menu-item" data-menu-controlled="load_data">Load Data From Erlang</div>
+  <div class="button menu-item" data-menu-controlled="debug_output">Show Debug Output</div>
+</section>
+<section id="expressions" class="menu-controlled">
     <div id="main" class="main_output">
     &nbsp;
       <%= for {type, k, v} <- @main do %>
@@ -10,22 +15,14 @@
         </div>
       <% end %>
     </div>
-</section>
-<section class="input_line">
   <form phx-submit="on_enter">
     <input type="text" name="expression" placeholder="Enter Pometo Expression" list="results" autocomplete="off"/>
     <button type="submit" phx-disable-with="Compiling...">Enter</button>
   </form>
 </section>
-<section>
-    <div class="small">Load data from the BEAM
-    <input type='checkbox' id='show_bindings' name='show_bindings' value='show_bindings'>
-    debug
-    <input type='checkbox' id='debug' name='debug' value='debug'>
-   </div>
-</section>
-<section id="make_binding" class="hidden">
-  <div class="small">You can run an Erlang function and bind its value to an APL variable</div>
+<section id="load_data" class=" menu-controlled hidden">
+  <div>&nbsp;</div>
+  <h5>You can run an Erlang function and bind its value to an Pometo variable</h5>
   <form phx-submit="on_bind">
     <input type="text" name="variable_name" placeholder="variable name" list="variable" autocomplete="off" />
     <input type="text" name="module" placeholder="module name" list="module" autocomplete="off" />
@@ -34,21 +31,23 @@
     <button type="submit" phx-disable-with="Compiling...">Bind data</button>
   </form>
 </section>
-<section id="debug_output" class="row hidden">
+<section id="debug_output" class="menu-controlled row hidden">
 	<article class="column">
-	<h4>Lexer Output</h4>
+  <div>&nbsp;</div>
+	<h5>Lexer Output</h5>
     <div id="lexer" class="debug">
       <%= for {n, l} <- @lexer do %>
         <div class="main"><span class="small"><%= n %></span> <%= l %></div>
       <% end %>
     <div>
     </article>
-	<article class="column">    
-    <h4>Parser Output</h4>
+	<article class="column">
+  <div>&nbsp;</div>
+    <h5>Parser Output</h5>
     <div id="parser" class="debug">
       <%= for {n, p} <- @parser do %>
         <div class="main"><span class="small"><%= n %></span> <%= p %></div>
       <% end %>
     <div>
-    </article>    
+    </article>
 </section>

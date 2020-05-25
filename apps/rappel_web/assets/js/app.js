@@ -32,20 +32,20 @@ liveSocket.connect()
 // >> liveSocket.enableLatencySim(1000)
 window.liveSocket = liveSocket
 
-document.getElementById("debug").addEventListener("click", function () {
-	if (document.getElementById("debug").checked) {
-		document.getElementById("debug_output").classList.remove("hidden");
-	} else {
-		document.getElementById("debug_output").classList.add("hidden");
 
-	}
-});
+var menu_buttons = document.getElementsByClassName("menu-item");
 
-document.getElementById("show_bindings").addEventListener("click", function () {
-	if (document.getElementById("show_bindings").checked) {
-		document.getElementById("make_binding").classList.remove("hidden");
-	} else {
-		document.getElementById("make_binding").classList.add("hidden");
+var menuClick = function(e) {
+	var pressedID = e.originalTarget.getAttribute("data-menu-controlled");
+    var menu_items = document.getElementsByClassName("menu-controlled");
+	Array.from(menu_items).forEach(function(menu_item) {
+        menu_item.classList.add("hidden");
+    });
+    var pressed = document.getElementById(pressedID);
+    pressed.classList.remove("hidden");
 
-	}
-});
+};
+
+Array.from(menu_buttons).forEach(function(menu_button) {
+      menu_button.addEventListener('click', menuClick);
+    });

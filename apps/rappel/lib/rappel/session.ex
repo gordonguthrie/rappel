@@ -38,18 +38,23 @@ defmodule Rappel.Rappel.Session do
   def handle_call({:expression, e}, _from, %Session{bindings: bs,
                                                     commands: c} = session) do
     lexed = lex(e)
-    {parsed, bindings}  = parse(lexed)
-    newbinding = %Binding{expression: e, results: bindings}
-    repacked_bindings = case repack(bindings, e) do
-        []         -> bs
-        [repacked] -> repacked
+    case parse(lexed) do
+      {parsed, bindings} ->
+        newbinding = %Binding{expression: e, results: bindings}
+        repacked_bindings = case repack(bindings, e) do
+          []         -> bs
+          [repacked] -> repacked
+      end
+      merged_bindings = merge(repacked_bindings, bs)
+      results = :pometo_runtime.run_ast(parsed)
+      new_session = %Session{session | bindings: merged_bindings,
+                                       commands: [{e, parsed, results} | c]}
+      reply = %{lexed: lexed, parsed: parsed, main: make_main(new_session)}
+      {:reply, {:ok, reply}, new_session}
+    error ->
+      reply = {:error, %{lexed: lexed, parsed: %{1 => "error"}, main: make_main(session)}}
+      {:reply, reply, session}
     end
-    merged_bindings = merge(repacked_bindings, bs)
-    results = :pometo_runtime.run_ast(parsed)
-    new_session = %Session{session | bindings: merged_bindings,
-                                     commands: [{e, parsed, results} | c]}
-    reply = %{lexed: lexed, parsed: parsed, main: make_main(new_session)}
-    {:reply, reply, new_session}
   end
   def handle_call(:get_listing, _from, session) do
     reply = %{lexed: %{}, parsed: %{}, main: make_main(session)}
