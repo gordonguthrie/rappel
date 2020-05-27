@@ -1,6 +1,7 @@
 defmodule Rappel.Rappel.Command do
-	
-	defstruct expression: "",
+
+	defstruct expr: "",
+			  suceeded:   true,
 			  results:    ""
 
 end

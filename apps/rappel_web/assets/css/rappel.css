@@ -30,7 +30,7 @@
 
 }
 
-.expression {
+.expression, .error {
 	color: midnightblue;
 }
 
@@ -40,6 +40,16 @@
 
 .results {
 	color: maroon;
+}
+
+.results div {
+	margin-bottom: 1.0rem;
+	background:    #f4f5f6;
+}
+
+.errors {
+	color: MediumVioletRed
+	;
 }
 
 .menu-item  {
@@ -52,4 +62,12 @@
 
 .clear {
 	clear: both;
+}
+
+pre {
+	margin-bottom:  1.0rem;
+	margin-top:     0.0rem;
+	border-left:    none;
+	padding-top:    0;
+	padding-bottom: 0;
 }

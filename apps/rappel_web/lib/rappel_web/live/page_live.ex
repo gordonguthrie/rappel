@@ -64,7 +64,7 @@ defmodule RappelWeb.PageLive do
        end
 
   defp run_binding(varname, mod, func, args) do
-      varrec = :pometo_lexer.get_tokens(String.to_charlist(varname))
+      {:ok, varrec} = :pometo_lexer.get_tokens(String.to_charlist(varname))
         case varrec do
           [{:var, _, _, _, _var}]  ->
             {:ok, args_list, _} = :erl_scan.string(String.to_charlist(args))

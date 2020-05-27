@@ -1,5 +1,5 @@
 defmodule Rappel.Rappel.Session do
-	
+
   use GenServer
 
   alias Rappel.Rappel.Session
@@ -16,7 +16,6 @@ defmodule Rappel.Rappel.Session do
   def start_link([]) do
     GenServer.start_link(__MODULE__, [], name: __MODULE__)
   end
-
 
   @impl true
   def init([]) do
@@ -37,24 +36,42 @@ defmodule Rappel.Rappel.Session do
   end
   def handle_call({:expression, e}, _from, %Session{bindings: bs,
                                                     commands: c} = session) do
-    lexed = lex(e)
-    case parse(lexed) do
-      {parsed, bindings} ->
-        newbinding = %Binding{expression: e, results: bindings}
-        repacked_bindings = case repack(bindings, e) do
-          []         -> bs
-          [repacked] -> repacked
-      end
-      merged_bindings = merge(repacked_bindings, bs)
-      results = :pometo_runtime.run_ast(parsed)
-      new_session = %Session{session | bindings: merged_bindings,
-                                       commands: [{e, parsed, results} | c]}
-      reply = %{lexed: lexed, parsed: parsed, main: make_main(new_session)}
-      {:reply, {:ok, reply}, new_session}
-    error ->
-      reply = {:error, %{lexed: lexed, parsed: %{1 => "error"}, main: make_main(session)}}
-      {:reply, reply, session}
+    case lex(e) do
+      {:ok, lexed} ->
+        case parse(lexed) do
+          {parsed, bindings} ->
+            newbinding = %Binding{expression: e, results: bindings}
+            repacked_bindings = case repack(bindings, e) do
+              []         -> bs
+              [repacked] -> repacked
+            end
+            merged_bindings = merge(repacked_bindings, bs)
+            results = :pometo_runtime.run_ast(parsed)
+            new_c = %Command{expr:    e,
+                             results: results}
+            new_session = %Session{session | bindings: merged_bindings,
+                                             commands: [new_c | c]}
+            reply = %{lexed: lexed, parsed: parsed, main: make_main(new_session)}
+            {:reply, {:ok, reply}, new_session}
+          error ->
+            err = "fix up parser error"
+            new_c = %Command{expr:     e,
+                             suceeded: false,
+                             results:  err}
+            new_session = %Session{session | commands: [new_c | c]}
+            reply = {:error, %{lexed: lexed, parsed: %{1 => "error"}, main: make_main(session)}}
+            {:reply, reply, session}
+        end
+      {:error, errors} ->
+        new_c = %Command{expr:     e,
+                         suceeded: false,
+                         results:  errors}
+        new_session = %Session{session | commands: [new_c| c]}
+        reply = %{lexed: %{}, parsed: %{}, main: make_main(new_session)}
+        {:reply, {:ok, reply}, new_session}
+
     end
+
   end
   def handle_call(:get_listing, _from, session) do
     reply = %{lexed: %{}, parsed: %{}, main: make_main(session)}
@@ -107,8 +124,15 @@ defmodule Rappel.Rappel.Session do
            end
            new_acc
           end)
-          cs = Enum.reduce(c, [], fn({k, _expr, v}, acc) ->
-              new_acc = {:expression, k, to_string(:pometo_runtime.format(v))}
+          cs = Enum.reduce(c, [], fn(%Command{expr:     e,
+                                              suceeded: s,
+                                              results:  r}, acc) ->
+              new_acc = case s do
+                true ->
+                  {:expression, e, :ran,         to_string(:pometo_runtime.format(r))}
+                false ->
+                  {:error,      e, :did_not_run, :pometo_runtime.format_errors(r)}
+              end
               [new_acc | acc]
           end)
           bs ++ cs

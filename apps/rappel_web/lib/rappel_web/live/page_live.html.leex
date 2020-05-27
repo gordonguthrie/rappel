@@ -6,13 +6,21 @@
 <section id="expressions" class="menu-controlled">
     <div id="main" class="main_output">
     &nbsp;
-      <%= for {type, k, v} <- @main do %>
+      <%= for {type, k, successtype, v} <- @main do %>
         <div class="main <%= type %>">
           <%= k %>
         </div>
-        <div class="main results">
-          &nbsp;&nbsp;&nbsp;<%= v %>
-        </div>
+        <%= if successtype == :did_not_run do %>
+          <div class="main errors">
+            <pre><%= v %></pre>
+         </div>
+        <% else %>
+          <div class="main results">
+            <div>
+              &nbsp;&nbsp;&nbsp;<%= v %>
+            </div>
+          </div>
+        <% end %>
       <% end %>
     </div>
   <form phx-submit="on_enter">
