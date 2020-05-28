@@ -29,8 +29,13 @@ defmodule Rappel.Rappel.Session do
     {:reply, reply, new_session}
   end
 
-  def handle_call(:get_session, _from, %Session{commands: c} = session) do
-    reply = get_commands(c, [])
+  def handle_call(:get_session, _from, %Session{bindings: b,
+                                                commands: c} = session) do
+    header =    ["⍝\n", "⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝ External Bindings ⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝\n", "⍝\n"]
+    bs = get_bindings(b)
+    seperator = ["⍝\n", "⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝ Expressions ⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝⍝\n", "⍝\n"]
+    cs = get_commands(c, [])
+    reply = header ++ bs ++ seperator ++ cs
     {:reply, reply, session}
   end
 
@@ -70,8 +75,16 @@ defmodule Rappel.Rappel.Session do
     Enum.reduce(expressions, {bindings, []}, &do_run/2)
   end
 
+  defp do_run("", {bindings, commands}) do
+    {bindings, commands}
+  end
   defp do_run(expr, {bindings, commands}) do
     case lex(expr) do
+      # comments on lines are valid
+      {:ok, []} ->
+        new_c = %Command{expr:     expr,
+                         results:  ''}
+        {bindings, [new_c | commands]}
       {:ok, lexed} ->
         parse(lexed, expr, bindings, commands)
       {:error, errors} ->
@@ -93,16 +106,15 @@ defmodule Rappel.Rappel.Session do
 
   defp parse(tokens, expr, bindings, commands) do
     case parse2(tokens) do
-      {parsed, bindings} ->
-        repacked_bindings = case repack(bindings, expr) do
+      {parsed, new_bindings} ->
+        repacked_bindings = case repack(new_bindings, expr) do
           []         -> bindings
-          [repacked] -> repacked
+          [repacked] -> merge(repacked, bindings)
         end
-        merged_bindings = merge(repacked_bindings, bindings)
         results = :pometo_runtime.run_ast(parsed)
         new_c = %Command{expr:    expr,
                          results: results}
-        {merged_bindings, [new_c | commands]}
+        {repacked_bindings, [new_c | commands]}
       error ->
         IO.inspect(error, label: "FIX ME: parsing failed with error")
         err = "fix up parser error"
@@ -139,7 +151,8 @@ defmodule Rappel.Rappel.Session do
                        ", ["             <>
                        a                 <>
                        "])"
-                 [{:external_binding, str, to_string(results)} | acc]
+                 # if the binding failed it wouldn't be here so set to :run
+                 [{:external_binding, str, :ran, to_string(results)} | acc]
                _ ->
                  acc
            end
@@ -152,7 +165,7 @@ defmodule Rappel.Rappel.Session do
                 true ->
                   {:expression, e, :ran,         to_string(:pometo_runtime.format(r))}
                 false ->
-                  {:error,      e, :did_not_run, :pometo_runtime.format_errors(r)}
+                  {:error,      e, :did_not_run, to_string(:pometo_runtime.format_errors(r))}
               end
               [new_acc | acc]
           end)
@@ -166,14 +179,28 @@ defmodule Rappel.Rappel.Session do
   end
 
   defp merge(new_bindings, old_bindings) do
-    Enum.reduce(new_bindings, old_bindings, fn({k, v}, bindings) ->  Map.put(bindings, k, v) end)
+    Enum.reduce(new_bindings, old_bindings, &put_bindings/2)
   end
+
+  defp put_bindings({k, v}, bindings) do
+    Map.put(bindings, k, v)
+  end
+
+  defp get_bindings(bindings) do
+    Enum.map(bindings, &format_bindings/1)
+  end
+
+  defp format_bindings({var, %{expression: %ExternalBinding{module: m, function: f, arguments: a}}}) do
+    var <> " ← " <> Atom.to_string(m) <> ":" <> Atom.to_string(f) <> "(" <> a <> ").\n"
+  end
+  defp format_bindings({_, _}), do: ""
 
   # commands are held in reverse order, so don't reverse the accumulator
   defp get_commands([],      acc), do: Enum.join(acc, "\n")
   defp get_commands([h | t], acc) do
     %Command{expr:     e,
-             suceeded: s} = h
+             suceeded: s,
+             results:  r} = h
     newacc = case s do
                true  -> [e | acc]
                false -> acc
@@ -181,5 +208,7 @@ defmodule Rappel.Rappel.Session do
     get_commands(t, newacc)
   end
 
+  defp comment_out([]), do: ''
+  defp comment_out(x),  do: '⍝ ' ++ :pometo_runtime.format(x)
 
 end

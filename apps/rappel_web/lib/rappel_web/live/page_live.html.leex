@@ -15,9 +15,11 @@
          </div>
         <% else %>
           <div class="main results">
-            <div>
-              &nbsp;&nbsp;&nbsp;<%= v %>
-            </div>
+            <%= if v != "" do %>
+              <div>
+                &nbsp;&nbsp;&nbsp;<%= v %>
+              </div>
+            <% end %>
           </div>
         <% end %>
       <% end %>
