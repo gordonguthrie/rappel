@@ -23,6 +23,17 @@ defmodule Rappel.Rappel.Session do
   end
 
   @impl true
+  def handle_call(:clear_session, _from, _session) do
+    new_session = %Session{}
+    reply = make_main(new_session)
+    {:reply, reply, new_session}
+  end
+
+  def handle_call(:get_session, _from, %Session{commands: c} = session) do
+    reply = get_commands(c, [])
+    {:reply, reply, session}
+  end
+
   def handle_call({:binding, {{varname, {m, f, a}}, results}}, _from, %Session{bindings: bs} = session) do
     external_binding = %ExternalBinding{module:    m,
                                         function:  f,
@@ -31,50 +42,21 @@ defmodule Rappel.Rappel.Session do
                            results:    results}
     newb = Map.put(bs, varname, new_binding)
     new_session = %Session{session | bindings: newb}
-    reply = %{lexed: %{}, parsed: %{}, main: make_main(new_session)}
+    reply = make_main(new_session)
     {:reply, reply, new_session}
   end
-  def handle_call({:expression, e}, _from, %Session{bindings: bs,
-                                                    commands: c} = session) do
-    case lex(e) do
-      {:ok, lexed} ->
-        case parse(lexed) do
-          {parsed, bindings} ->
-            newbinding = %Binding{expression: e, results: bindings}
-            repacked_bindings = case repack(bindings, e) do
-              []         -> bs
-              [repacked] -> repacked
-            end
-            merged_bindings = merge(repacked_bindings, bs)
-            results = :pometo_runtime.run_ast(parsed)
-            new_c = %Command{expr:    e,
-                             results: results}
-            new_session = %Session{session | bindings: merged_bindings,
-                                             commands: [new_c | c]}
-            reply = %{lexed: lexed, parsed: parsed, main: make_main(new_session)}
-            {:reply, {:ok, reply}, new_session}
-          error ->
-            err = "fix up parser error"
-            new_c = %Command{expr:     e,
-                             suceeded: false,
-                             results:  err}
-            new_session = %Session{session | commands: [new_c | c]}
-            reply = {:error, %{lexed: lexed, parsed: %{1 => "error"}, main: make_main(session)}}
-            {:reply, reply, session}
-        end
-      {:error, errors} ->
-        new_c = %Command{expr:     e,
-                         suceeded: false,
-                         results:  errors}
-        new_session = %Session{session | commands: [new_c| c]}
-        reply = %{lexed: %{}, parsed: %{}, main: make_main(new_session)}
-        {:reply, {:ok, reply}, new_session}
 
-    end
-
+  def handle_call({:expressions, es}, _from, %Session{bindings: bs,
+                                                      commands: cs} = session) do
+    {new_bs, new_cs} = run(es, bs)
+    new_session = %Session{session | commands: new_cs ++ cs,
+                                     bindings: new_bs}
+    reply = make_main(new_session)
+    {:reply, {:ok, reply}, new_session}
   end
+
   def handle_call(:get_listing, _from, session) do
-    reply = %{lexed: %{}, parsed: %{}, main: make_main(session)}
+    reply = make_main(session)
     {:reply, reply, session}
   end
 
@@ -83,22 +65,61 @@ defmodule Rappel.Rappel.Session do
     {:noreply, session}
   end
 
-  defp lex(string) do
-      try do
-        charlist = String.to_charlist(string)
-        _lexed = :pometo_lexer.get_tokens(charlist)
-      catch
-        e -> Kernel.inspect(e)
-      end
+  defp run(string, bindings) do
+    expressions = String.split(string, "\n")
+    Enum.reduce(expressions, {bindings, []}, &do_run/2)
   end
 
-  defp parse(tokenlist) do
-        parsed = :pometo_parser.parse(tokenlist)
-        case parsed do
-            {:ok, parse}    -> parse
-            {:error, error} -> IO.inspect(error, label: "parser error")
-                               "error"
+  defp do_run(expr, {bindings, commands}) do
+    case lex(expr) do
+      {:ok, lexed} ->
+        parse(lexed, expr, bindings, commands)
+      {:error, errors} ->
+        new_c = %Command{expr:     expr,
+                         suceeded: false,
+                         results:  errors}
+        {bindings, [new_c | commands]}
+    end
+  end
+
+  defp lex(string) do
+    try do
+      charlist = String.to_charlist(string)
+      _lexed = :pometo_lexer.get_tokens(charlist)
+    catch
+      e -> Kernel.inspect(e)
+    end
+  end
+
+  defp parse(tokens, expr, bindings, commands) do
+    case parse2(tokens) do
+      {parsed, bindings} ->
+        repacked_bindings = case repack(bindings, expr) do
+          []         -> bindings
+          [repacked] -> repacked
         end
+        merged_bindings = merge(repacked_bindings, bindings)
+        results = :pometo_runtime.run_ast(parsed)
+        new_c = %Command{expr:    expr,
+                         results: results}
+        {merged_bindings, [new_c | commands]}
+      error ->
+        IO.inspect(error, label: "FIX ME: parsing failed with error")
+        err = "fix up parser error"
+        new_c = %Command{expr:     expr,
+                         suceeded: false,
+                         results:  err}
+        {bindings, [new_c | commands]}
+    end
+  end
+
+  defp parse2(tokenlist) do
+    parsed = :pometo_parser.parse(tokenlist)
+    case parsed do
+      {:ok, parse}    -> parse
+      {:error, error} -> IO.inspect(error, label: "FIX ME: parser error")
+                        "error"
+    end
   end
 
   defp make_main(%Session{bindings: b,
@@ -147,5 +168,18 @@ defmodule Rappel.Rappel.Session do
   defp merge(new_bindings, old_bindings) do
     Enum.reduce(new_bindings, old_bindings, fn({k, v}, bindings) ->  Map.put(bindings, k, v) end)
   end
+
+  # commands are held in reverse order, so don't reverse the accumulator
+  defp get_commands([],      acc), do: Enum.join(acc, "\n")
+  defp get_commands([h | t], acc) do
+    %Command{expr:     e,
+             suceeded: s} = h
+    newacc = case s do
+               true  -> [e | acc]
+               false -> acc
+             end
+    get_commands(t, newacc)
+  end
+
 
 end

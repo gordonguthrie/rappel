@@ -12,9 +12,11 @@ The main screen of `Rappel` allows you to run `Pometo` commands and displays the
 
 ![Main Rappel Panel](./docs/images/rappel_main_page.png)
 
-At the bottom you see a couple of checkboxes.
+The tabs at the top let you switch between the main REPL and the external bindings page.
 
-If you want to load from data from an arbritrary programme click the checkbox marked `bind data`. The syntax currently used is ***Erlang*** syntax for an `apply(mod, fn, [args])`
+At the bottom there is a button to clear the session and a link that opens a new window with a text dump of your session. You can save and replay sessions at will.
+
+The syntax currently used for loading data is ***Erlang*** syntax for an `apply(mod, fn, [args])`
 
 ![Loading External Data](./docs/images/rappel_load_data.png)
 
@@ -54,12 +56,6 @@ The arguments must at the moment be:
 
 `lists` and `tuples` are not currently supported.
 
-
-There is also a debugger for inspecting the results of the `lex` and `parse` stages of the compiler
-
-![The Debugger](./docs/images/rappel_debug.png)
-
-
 # How We Develop
 
 Development is done inside a docker container.
@@ -68,7 +64,7 @@ The docker container mounts the local file system so code can be edited on your 
 
 Ports are punched out from the firewall so that `rappel` can be started in a browser running from your normal host.
 
-Scripts are provided that shell you into the running docker instance. 
+Scripts are provided that shell you into the running docker instance.
 
 The docker container is even jiggered so you can start X-Windows programmes and pop them out (though this is not really necessary).
 

@@ -17,7 +17,8 @@ defmodule RappelWeb.Router do
   scope "/", RappelWeb do
     pipe_through :browser
 
-    live "/", PageLive, :index
+    live "/",        PageLive,          :index
+    get  "/session", SessionController, :index
   end
 
   # Other scopes may use custom stacks.

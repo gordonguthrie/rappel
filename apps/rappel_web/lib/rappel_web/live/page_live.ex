@@ -5,12 +5,8 @@ defmodule RappelWeb.PageLive do
 
   @impl true
   def mount(_params, _session, socket) do
-        %{lexed:  lexed,
-          parsed: parsed,
-          main:   main} = GenServer.call(Session, :get_listing)
-    {:ok, assign(socket, main:   main,
-                         lexer:  lexed,
-                         parser: parsed)}  end
+    main = GenServer.call(Session, :get_listing)
+    {:ok, assign(socket, main: main)}  end
 
   def handle_event("on_bind", args, socket) do
     # doing nothing
@@ -18,16 +14,12 @@ defmodule RappelWeb.PageLive do
       "module"        => mod,
       "function"      => func,
       "arguments"     => arguments} = args
-    response = case run_binding(varname, mod, func, arguments) do
+    case run_binding(varname, mod, func, arguments) do
       {:ok, {{m, f}, vals}} ->
         vals2 = Enum.join(vals, " ")
         binding = {varname, {m, f, arguments}}
-        %{lexed:  lexed,
-          parsed: parsed,
-          main:   main} =GenServer.call(Session, {:binding, {binding, vals2}})
-          {:noreply, assign(socket, main:   main,
-                                    lexer:  format(lexed),
-                                    parser: format([parsed]))}
+        main = GenServer.call(Session, {:binding, {binding, vals2}})
+        {:noreply, assign(socket, main: main)}
       {:error, error} ->
         error_response = put_flash(socket, :error, error)
         {:noreply, error_response}
@@ -35,33 +27,21 @@ defmodule RappelWeb.PageLive do
   end
 
   @impl true
-  def handle_event("on_enter", %{"expression" => expression} = args, socket) do
-    case GenServer.call(Session, {:expression, expression}) do
-      {:ok, response} ->
-            %{lexed:   lexed,
-              parsed:  parsed,
-              main:    main} = response
-              reply = assign(socket, main:   main,
-                                     lexer:  format(lexed),
-                                     parser: format([parsed]))
-              {:noreply, reply}
-    {:error, response} ->
-            %{lexed:   lexed,
-              parsed:  parsed,
-              main:    main} = response
-              error_reply = put_flash(socket, :error, "invalid expression")
-              {:noreply, assign(error_reply, main:   main,
-                                             lexer:  format(lexed),
-                                             parser: format([parsed]))}
-    end
+  def handle_event("on_clear", _args, socket) do
+    response =  GenServer.call(Session, :clear_session)
+    {:noreply, assign(socket, main: response)}
   end
 
-  defp format(map) do
-        {_, msg} = Enum.reduce(map, {0, %{}}, fn (l, {n, acc}) ->
-          {n + 1, Map.put(acc, n, Kernel.inspect(l))}
-        end)
-        msg
-       end
+
+  def handle_event("on_enter", %{"expressions" => expressions}, socket) do
+    case GenServer.call(Session, {:expressions, expressions}) do
+      {:ok, response} ->
+            {:noreply, assign(socket, main: response)}
+    {:error, response} ->
+            error_reply = put_flash(socket, :error, "invalid expression")
+            {:noreply, assign(error_reply, main: response)}
+    end
+  end
 
   defp run_binding(varname, mod, func, args) do
       {:ok, varrec} = :pometo_lexer.get_tokens(String.to_charlist(varname))
@@ -102,7 +82,5 @@ defmodule RappelWeb.PageLive do
   defp make_args([{:atom,    _, a}            | t], acc), do: make_args(t, [a  | acc])
   defp make_args([{:string,  _, c}            | t], acc), do: make_args(t, [c  | acc])
   defp make_args([{:",", _}                   | t], acc), do: make_args(t,       acc)
-
-  defp is_set(map, key), do: Map.put(%{}, key, Map.has_key?(map, key))
 
 end
