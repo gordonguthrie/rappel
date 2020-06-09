@@ -17,12 +17,9 @@ services:
         target: /rappel
         # there is a mix/rebar3 problem so we need a local install of LFE
       - type: bind
-        source: ../lfe
-        target: /lfe      # when you are developing and you want to local mount the pometo APL code
-      - type: bind
         source: ../pometo
         target: /pometo
       # for xwindows
-      - type: bind
-        source: /tmp/.X11-unix
-        target: /tmp/.X11-unix
+      #- type: bind
+      #  source: /tmp/.X11-unix
+      #  target: /tmp/.X11-unix
