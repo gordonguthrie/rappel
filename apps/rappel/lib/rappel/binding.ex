@@ -1,6 +1,7 @@
 defmodule Rappel.Rappel.Binding do
-	
-	defstruct expression: "",
+
+	defstruct binding:    "",
+			  expression: "",
 			  results:    ""
 
 end

@@ -4,10 +4,9 @@
 </section>
 <section id="expressions" class="menu-controlled clear">
     <div id="main" class="main_output">
-    &nbsp;
       <%= for {type, k, successtype, v} <- @main do %>
         <div class="main <%= type %>">
-          <%= k %>
+         <pre><%= k %></pre>
         </div>
         <%= if successtype == :did_not_run do %>
           <div class="main errors">
@@ -17,7 +16,7 @@
           <div class="main results">
             <%= if v != "" do %>
               <div>
-                &nbsp;&nbsp;&nbsp;<%= v %>
+                <pre><%= v %></pre>
               </div>
             <% end %>
           </div>
@@ -25,7 +24,7 @@
       <% end %>
     </div>
   <form phx-submit="on_enter">
-    <textarea type="text" name="expressions" placeholder="Enter Pometo Expression" list="results" autocomplete="off"></textarea>
+    <textarea id="expression_input" type="text" name="expressions" placeholder="Enter Pometo Expression" list="results" autocomplete="off"></textarea>
     <button type="submit" phx-disable-with="Compiling...">Run Expression</button>
   </form>
   <form phx-submit="on_clear">
