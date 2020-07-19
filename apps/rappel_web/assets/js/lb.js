@@ -1,59 +1,3 @@
-// We need to import the CSS so that webpack will load it.
-// The MiniCssExtractPlugin is used to separate it out into
-// its own CSS file.
-import "../css/app.scss"
-
-// webpack automatically bundles all modules in your
-// entry points. Those entry points can be configured
-// in "webpack.config.js".
-//
-// Import deps with the dep name or local files with a relative path, for example:
-//
-//     import {Socket} from "phoenix"
-//     import socket from "./socket"
-//
-import "phoenix_html"
-import {Socket} from "phoenix"
-import NProgress from "nprogress"
-import {LiveSocket} from "phoenix_live_view"
-
-let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}})
-
-// Show progress bar on live navigation and form submits
-window.addEventListener("phx:page-loading-start", info => NProgress.start())
-window.addEventListener("phx:page-loading-stop", info => NProgress.done())
-
-// connect if there are any LiveViews on the page
-liveSocket.connect()
-
-// expose liveSocket on window for web console debug logs and latency simulation:
-// >> liveSocket.enableDebug()
-// >> liveSocket.enableLatencySim(1000)
-window.liveSocket = liveSocket
-
-
-var menu_buttons = document.getElementsByClassName("menu-item");
-
-var menuClick = function(e) {
-	var pressedID = e.originalTarget.getAttribute("data-menu-controlled");
-    var menu_items = document.getElementsByClassName("menu-controlled");
-	Array.from(menu_items).forEach(function(menu_item) {
-        menu_item.classList.add("hidden");
-    });
-    var pressed = document.getElementById(pressedID);
-    pressed.classList.remove("hidden");
-
-};
-
-Array.from(menu_buttons).forEach(function(menu_button) {
-      menu_button.addEventListener('click', menuClick);
-    });
-
-// Complete APL menu nicked from https://abrudz.github.io/lb/apl
-
-// not all symbols are implemented yet :-(
-
 ;(_=>{
 let hc={'<':'&lt;','&':'&amp;',"'":'&apos;','"':'&quot;'},he=x=>x.replace(/[<&'"]/g,c=>hc[c]) //html chars and escape fn
 ,tcs='<-←xx×/\\×:-÷*O⍟[-⌹-]⌹OO○77⌈FF⌈ll⌊LL⌊T_⌶II⌶|_⊥TT⊤-|⊣|-⊢=/≠L-≠<=≤<_≤>=≥>_≥==≡=_≡7=≢L=≢vv∨^^∧^~⍲v~⍱^|↑v|↓((⊂cc⊂(_⊆c_⊆))⊃[|⌷|]⌷A|⍋V|⍒ii⍳i_⍸ee∊e_⍷'+
@@ -67,10 +11,10 @@ let hc={'<':'&lt;','&':'&amp;',"'":'&apos;','"':'&quot;'},he=x=>x.replace(/[<&'"
 '⍒⍒\ngrade down\ngrades down',' ','⍳⍳\nindices\nindices of','⍸⍸\nwhere\ninterval index','∊∊\nenlist\nmember of','⍷⍷\nfind','∪∪\nunique\nunion','∩∩\nintersection','~~\nnot\nwithout',' ',
 '//\nreplicate\nReduce','\\\\\n\expand\nScan','⌿⌿\nreplicate first\nReduce First','⍀⍀\nexpand first\nScan First',' ',',,\nenlist\ncatenate/laminate',
 '⍪⍪\ntable\ncatenate first/laminate','⍴⍴\nshape\nreshape','⌽⌽\nreverse\nrotate','⊖⊖\nreverse first\nrotate first',
-'⍉⍉\ntranspose\nreorder axes',' ','¨¨\neach','⍨⍨\nconstant\nself\nswap','⍣⍣\nrepeat\nuntil','..\nouter product (∘.)\ninner product',
-'∘∘\nouter product (∘.)\nbind\nbeside','⍤⍤\nrank\natop','⍥⍥\nover','@@\nat',' ','⍞⍞\nSTDIN\nSTDERR','⎕⎕\nEVALUATED STDIN\nSTDOUT\nSYSTEM NAME PREFIX','⍠⍠\nvariant',
-'⌸⌸\nindex key\nkey','⌺⌺\nstencil','⌶⌶\nI-beam','⍎⍎\nexecute','⍕⍕\nformat',' ','⋄⋄\nSTATEMENT SEPARATOR','⍝⍝\nCOMMENT','→→\nABORT\nBRANCH','⍵⍵\nRIGHT ARGUMENT\nRIGHT OPERAND (⍵⍵)','⍺⍺\nLEFT ARGUMENT\nLEFT OPERAND (⍺⍺)',
-'∇∇\nrecursion\nrecursion (∇∇)','&&\nspawn',' ','¯¯\nNEGATIVE','⍬⍬\nEMPTY NUMERIC VECTOR','∆∆\nIDENTIFIER CHARACTER','⍙⍙\nIDENTIFIER CHARACTER']
+'⍉⍉\ntranspose\nreorder axes',' ','¨¨\nEach','⍨⍨\nConstant\nSelf\nSwap','⍣⍣\nRepeat\nUntil','..\nOuter Product (∘.)\nInner Product',
+'∘∘\nOUTER PRODUCT (∘.)\nBind\nBeside','⍤⍤\nRank\nAtop','⍥⍥\nOver','@@\nAt',' ','⍞⍞\nSTDIN\nSTDERR','⎕⎕\nEVALUATED STDIN\nSTDOUT\nSYSTEM NAME PREFIX','⍠⍠\nVariant',
+'⌸⌸\nIndex Key\nKey','⌺⌺\nStencil','⌶⌶\nI-Beam','⍎⍎\nexecute','⍕⍕\nformat',' ','⋄⋄\nSTATEMENT SEPARATOR','⍝⍝\nCOMMENT','→→\nABORT\nBRANCH','⍵⍵\nRIGHT ARGUMENT\nRIGHT OPERAND (⍵⍵)','⍺⍺\nLEFT ARGUMENT\nLEFT OPERAND (⍺⍺)',
+'∇∇\nrecursion\nRecursion (∇∇)','&&\nSpawn',' ','¯¯\nNEGATIVE','⍬⍬\nEMPTY NUMERIC VECTOR','∆∆\nIDENTIFIER CHARACTER','⍙⍙\nIDENTIFIER CHARACTER']
 ,bqk=' =1234567890-qwertyuiop\\asdfghjk∙l;\'zxcvbnm,./`[]+!@#$%^&*()_QWERTYUIOP|ASDFGHJKL:"ZXCVBNM<>?~{}'.replace(/∙/g,'')
 ,bqv='`÷¨¯<≤=≥>≠∨∧×?⍵∊⍴~↑↓⍳○*⊢∙⍺⌈⌊_∇∆∘\'⎕⍎⍕∙⊂⊃∩∪⊥⊤|⍝⍀⌿⋄←→⌹⌶⍫⍒⍋⌽⍉⊖⍟⍱⍲!⍰W⍷R⍨YU⍸⍥⍣⊣ASDF⍢H⍤⌸⌷≡≢⊆⊇CVB¤∥⍪⍙⍠⌺⍞⍬'.replace(/∙/g,'')
 ,tc={},bqc={} //tab completions and ` completions
@@ -87,67 +31,12 @@ let d=document,el=d.createElement('div');el.innerHTML=
 `<div class=ngn_lb><span class=ngn_x title=Close>❎</span>${lbh}</div>
  <style>@font-face{font-family:"APL385 Unicode";src:local("APL385 Unicode"),url(//abrudz.github.io/lb/Apl385.woff)format('woff');}</style>
  <style>
-  .ngn_lb{position:fixed;top:0;left:0;right:0;background-color:#fff;color:#000;cursor:default;z-index:2147483647;
+  .ngn_lb{position:fixed;top:0;left:0;right:0;background-color:#eee;color:#000;cursor:default;z-index:2147483647;
     font-family:"Apl385 Unicode",monospace;border-bottom:solid #999 1px;padding:2px 2px 0 2px;word-wrap:break-word;}
   .ngn_lb b{cursor:pointer;padding:0 1px;font-weight:normal}
   .ngn_lb b:hover,.ngn_bq .ngn_lb{background-color:#777;color:#fff}
   .ngn_x{float:right;color:#999;cursor:pointer;margin-top:-3px}
   .ngn_x:hover{color:#f00}
-  [title~="exponential"]{display:none;}
-  [title~="logarithm"]{display:none;}
-  [title~="inverse"]{display:none;}
-  [title~="pi"]{display:none;}
-  [title~="factorial"]{display:none;}
-  [title~="roll"]{display:none;}
-  [title~="residue"]{display:none;}
-  [title~="ceiling"]{display:none;}
-  [title~="floor"]{display:none;}
-  [title~="decode"]{display:none;}
-  [title~="encode"]{display:none;}
-  [title~="same"]{display:none;}
-  [title~="unique"]{display:none;}
-  [title~="less"]{display:none;}
-  [title~="greater"]{display:none;}
-  [title~="depth"]{display:none;}
-  [title~="tally"]{display:none;}
-  [title~="greatest"]{display:none;}
-  [title~="lowest"]{display:none;}
-  [title~="nand"]{display:none;}
-  [title~="nor"]{display:none;}
-  [title~="mix"]{display:none;}
-  [title~="split"]{display:none;}
-  [title~="enclose"]{display:none;}
-  [title~="pick"]{display:none;}
-  [title~="nest"]{display:none;}
-  [title~="materialise"]{display:none;}
-  [title~="grade"]{display:none;}
-  [title~="where"]{display:none;}
-  [title~="enlist"]{display:none;}
-  [title~="find"]{display:none;}
-  [title~="intersection"]{display:none;}
-  [title~="without"]{display:none;}
-  [title~="catenate"]{display:none;}
-  [title~="reverse"]{display:none;}
-  [title~="transpose"]{display:none;}
-  [title~="each"]{display:none;}
-  [title~="swap"]{display:none;}
-  [title~="repeat"]{display:none;}
-  [title~="product"]{display:none;}
-  [title~="over"]{display:none;}
-  [title~="at"]{display:none;}
-  [title~="rank"]{display:none;}
-  [title~="STDIN"]{display:none;}
-  [title~="variant"]{display:none;}
-  [title~="index"]{display:none;}
-  [title~="stencil"]{display:none;}
-  [title~="I-beam"]{display:none;}
-  [title~="execute"]{display:none;}
-  [title~="format"]{display:none;}
-  [title~="abort"]{display:none;}
-  [title~="recursion"]{display:none;}
-  [title~="spawn"]{display:none;}
-  [title~="VECTOR"]{display:none;}
-  [title~="IDENTIFIER"]{display:none;}
  </style>`
 d.body.appendChild(el)
 let t,ts=[],lb=el.firstChild,bqm=0 //t:textarea or input, lb:language bar, bqm:backquote mode

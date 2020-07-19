@@ -2,15 +2,25 @@
 
 # Howdy
 
+`Rappel` is the REPL for `pometo` - the little APL on the BEAM. You now that liquid bowel feeling you get when you rappel off the side of a sky scraper for charity and go down the rope? Well that's how some people feel the first time they see APL syntax, and it rhymes with REPL, sooo...
+
 THIS PROJECT IS SUPER-EARLY, NOT SO MUCH ALPHA AS BEFORE THE DAWN OF WRITING, SOME INCHOATE SYMBOLS SCRAWLED WITH A HALF-BURNT STICK ON A CAVE WALL.
 
 If you want to help develop it, dive in.
+
+# About Pometo
+
+`Pometo` has an [online manual](https://gordonguthrie.github.io/pometo/).
 
 # Using Rappel
 
 The main screen of `Rappel` allows you to run `Pometo` commands and displays the results in the main panel:
 
 ![Main Rappel Panel](./docs/images/rappel_main_page.png)
+
+There is a javascript keyboard at the top that lets you put APL symbols in your code:
+
+![Javascript APL keyboard](./docs/images/apl_javascript_keyboard.png)
 
 The tabs at the top let you switch between the main REPL and the external bindings page.
 
@@ -75,44 +85,27 @@ We follow the principle of ***work elimination***. In this respect we work backw
 * the development specification
 * the main test suite
 
-There is a `rebar3` plugin called `pometo_docs_to_tests` which converts all `*.md` files in `docs` (and directories under it) into tests in `test/generated_tests/`.
+There is a `rebar3` plugin called `pometo_docs_to_tests` which converts all `*.md` files in `docs` (and directories under it) into tests in `test/generated_tests/`. There are six different tests generated per set of `pometo` source code and results.
 
 The format of the docs is fairly straightforward.
 
-To see how to write testable documentation please examine this screenshot:
-
-![Testable Documentation](./docs/images/writing_pometo_tests.png)
-
-The basic development protocol is:
-
-* write a specification of how the system should work in `docs/` using the structured format
-* generating the test suite with `rebar3 pometo_docs_to_tests`
-* running the tests with `rebar3 eunit`
-* writing code until the tests pass
-* commit and push
-
-DEVELOPMENT PROTOCOLS ARE NOT YET DEFINED:
-
-* testing and CI (Continuous Integration)
-* branches to push to
-* pull requests and reviews
-* etc, et bloody cetera
-
-THESE ARE NEXT ON THE AGENDA
+There is a section in the `pometo` documentation that will help you [to get started](https://gordonguthrie.github.io/pometo/implementation_reference/getting_started_as_a_developer_of_the_pometo_runtime_and_language.html)
 
 # Installation
+
+APL uses a special font ***Apl385 Unicode*** which you need to install on your dev machine or your `pometo` toolbar won't work. You should also install an APL keyboard on your dev machine. Download and installation instructions are [available on the Dyalog apl font and keyboards page](https://www.dyalog.com/apl-font-keyboard.htm). (You can even buy a special APL keyboard and be the envy of your pals ;-)
+
+![Check out the keyboard](./docs/images/apl_keyboard_I.jpg)
+![Sooooo many symbols](./docs/images/apl_keyboard_II.jpg)
 
 You need to have `docker` installed on your machine.
 
 https://docs.docker.com/get-docker/
 
-You need to clone this repo, the `Pometo` repo, and the `LFE` repo side by side in your file system
-
-***NOTE***: there is a problem getting lfe from Hex and we are using from-source installs at the moment
+You need to clone this repo, the `Pometo` repo.
 
 `git clone git@github.com:gordonguthrie/pometo.git`
 `git clone git@github.com:gordonguthrie/rappel.git`
-`git clone git@github.com:rvirding/lfe.git`
 
 Once the source code is available we bring up the `rappel` docker container
 
@@ -135,11 +128,7 @@ The `rappel` app is in the directory `/rappel` and `pometo` is in `/pometo`
 
 To start `rappel` you should run the following commands inside the docker container:
 
-Due to the dependency build problems you need to manually build `LFE` first and then pometo manually. This nees to be fixed.
-
 ```
-cd /lfe
-rebar3 compile
 cd /rappel
 mix deps.get
 mix deps.compile pometo
@@ -156,8 +145,4 @@ The typical dev cycle is:
 * crash out of `iex` and the `rappel` app back to the command line
 * restart `rappel` in `iex`
 
-`Pometo` is all about the interopability - so developing it is currently in two languages (`Erlang` and `Elixir`) and depending on how the runtime pans out, potentially in three with `LFE` (or `Lisp Flavoured Erlang`) being the current compiler target of choice.
-
-Typically compilers produce an `Abstract Syntax Tree` or `AST` as an output and oftentimes this is a `YASL` (`Yet Another Shitty Lisp`).
-
-It makes sense to have a `LISP`-`LISP` for the `AST` and the proposed format is an `Erlang` data structure code-named `Liffey` which has the property that if you `to_string()` it, then it becomes `LFE` source code.
+`Pometo` is all about the interopability - so developing it is currently in two languages (`Erlang` for `pometo` and `Elixir` for `rappel`).
