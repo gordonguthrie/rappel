@@ -93,7 +93,7 @@ There is a section in the `pometo` documentation that will help you [to get star
 
 # Installation
 
-APL uses a special font ***Apl385 Unicode*** which you need to install on your dev machine or your `pometo` toolbar won't work. You should also install an APL keyboard on your dev machine. Download and installation instructions are [available on the Dyalog apl font and keyboards page](https://www.dyalog.com/apl-font-keyboard.htm). (You can even buy a special APL keyboard and be the envy of your pals ;-)
+APL uses a special font ***Apl385 Unicode*** which you need to install on your dev machine or your `pometo` toolbar won't work. You must also install an APL keyboard on your dev machine. Download and installation instructions are [available on the Dyalog apl font and keyboards page](https://www.dyalog.com/apl-font-keyboard.htm). (You can even buy a special APL keyboard and be the envy of your pals ;-)
 
 ![Check out the keyboard](./docs/images/apl_keyboard_I.jpg)
 ![Sooooo many symbols](./docs/images/apl_keyboard_II.jpg)
@@ -102,7 +102,7 @@ You need to have `docker` installed on your machine.
 
 https://docs.docker.com/get-docker/
 
-You need to clone this repo, the `Pometo` repo.
+You need to clone this repo, and the `Pometo` repo. `Rappel` expectes `Pometo` to be installed as a sister repo next to it in the file system - the `docker-compose` file mounts the directory `../pometo`. If you put it somewhere else you will need to frig that file.
 
 `git clone git@github.com:gordonguthrie/pometo.git`
 `git clone git@github.com:gordonguthrie/rappel.git`
@@ -124,7 +124,7 @@ sh start_rappel.sh
 
 This will log you into the docker instance.
 
-The `rappel` app is in the directory `/rappel` and `pometo` is in `/pometo`
+The `rappel` app is in the directory `/rappel` and `pometo` is in `/pometo`. (when `Pometo` is releasable it will be a dependency of `Rappel` and published in `hex`).
 
 To start `rappel` you should run the following commands inside the docker container:
 
