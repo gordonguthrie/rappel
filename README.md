@@ -132,8 +132,17 @@ To start `rappel` you should run the following commands inside the docker contai
 cd /rappel
 mix deps.get
 mix deps.compile pometo
+cd apps/rappel_web/assets
+npm install
+cd ../../..
 iex -S mix phx.server
 ```
+
+These perform the following steps:
+* load and compile the dependencies
+* compile `pometo` which we are side loading from disk
+* install all the web components that generate the CSS and JS assets for the webpage
+* start an Elixir shell with the rappel web application running
 
 And then open a browser with `http://localhost:4000`
 
