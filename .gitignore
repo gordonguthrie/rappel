@@ -15,3 +15,5 @@ erl_crash.dump
 .babelrc
 package-lock.json
 *.mov
+apps/rappel_web/assets/*
+apps/rappel_web/priv/static/*
