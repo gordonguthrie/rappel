@@ -89,8 +89,7 @@ There is a `rebar3` plugin called `pometo_docs_to_tests` which converts all `*.m
 
 The format of the docs is fairly straightforward.
 
-There is a section in the `pometo` documentation that will help you [to get started]
-(https://gordonguthrie.github.io/pometo/for_contributors/getting_started_as_a_developer_of_the_pometo_runtime_and_language.html)
+There is a section in the `pometo` documentation that will help you [to get started](https://gordonguthrie.github.io/pometo/for_contributors/getting_started_as_a_developer_of_the_pometo_runtime_and_language.html)
 
 # Installation
 
