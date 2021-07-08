@@ -111,7 +111,7 @@ Once the source code is available we bring up the `rappel` docker container
 
 ```
 cd $GITROOT/rappel
-docker-compose build
+uid=$(id -u) gid=$(id -g) docker-compose build
 docker-compose up
 ```
 

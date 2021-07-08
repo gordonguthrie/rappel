@@ -1,5 +1,8 @@
 FROM elixir:1.9.4
 
+ARG uid
+ARG gid
+
 USER root
 
 RUN apt-get update
@@ -19,9 +22,7 @@ RUN apt-get install -y x11-apps
 RUN apt-get install -y pgadmin3
 RUN apt-get install -y tree
 
-# Replace 1000 with your user / group id
-RUN export uid=501 gid=20 && \
-    mkdir -p /home/developer && \
+RUN mkdir -p /home/developer && \
     echo "developer:x:${uid}:${gid}:Developer,,,:/home/developer:/bin/bash" >> /etc/passwd && \
     echo "developer:x:${uid}:" >> /etc/group && \
     echo "developer ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/developer && \
